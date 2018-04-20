@@ -7,8 +7,6 @@ public class Card
   public static final int GREEN = 3;
   public static final int BLUE = 4;
   
-  
-  
   //special rank constants
   public static final int SKIP_RANK = 10;
   public static final int REVERSE_RANK = 11;
@@ -25,7 +23,6 @@ public class Card
     this.rank = rank;
     this.color = color;
   }
-  
   
   public int getRank()
   {
