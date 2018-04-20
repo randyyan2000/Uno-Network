@@ -6,7 +6,6 @@ public class Game
   private LinkedList<Card> discard;
   private List<List<Card>> hands;
   
-  
   public Game(int numPlayers)
   {
     deck = new LinkedList<Card>();
@@ -15,7 +14,6 @@ public class Game
     dealCards(numPlayers);
     discard.push(deck.pop());
   }
-  
   
   public void initializeDeck()
   {
@@ -56,7 +54,11 @@ public class Game
   
   public void reshuffleDeck()
   {
-    hands
+    while(discard.size()>1)
+    {
+      deck.push(discard.pop());
+    }
+    Collections.shuffle(deck);
   }
   
   public void drawCard(int playerNum)
@@ -71,5 +73,4 @@ public class Game
     hands.get(playerNum).remove(card);
     discard.push(card);
   }
-  
 }
