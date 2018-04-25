@@ -61,6 +61,11 @@ public class ServerConnection extends Thread
   {
     String s = "INIT ";
     s += (top.toString());
+    for( Card c : hand )
+    {
+      s += " " + c.toString();
+    }
+    out.println(s);
   }
   
   public Card toCard(String rank, String color)

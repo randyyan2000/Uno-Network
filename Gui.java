@@ -1,3 +1,5 @@
+import java.util.*;
+
 public class Gui
 {
   private GridDisplay display;
@@ -80,6 +82,15 @@ public class Gui
   }
   
   
+  public void initialize(String top, List<String> hand)
+  {
+    display.setImage(discard, top);
+    for(int i = 0; i < hand.size(); i++)
+    {
+      display.setImage(new Location(8, i+1), hand.get(i)); 
+    }
+  }
+  
   
   //example:  blue_0_large.png
   public Card toCard(String s)
@@ -133,5 +144,17 @@ public class Gui
   {
     Gui g = new Gui();
     g.play();
+  }
+  
+  
+  //test method
+  public List<String> convert(List<Card> l)
+  {
+    List<String> ret = new ArrayList<String>();
+    for(int i = 0; i< l.size(); i++)
+    {
+      ret.add(l.get(i).toString());
+    }
+    return ret;
   }
 }

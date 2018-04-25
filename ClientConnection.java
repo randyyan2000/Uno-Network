@@ -30,6 +30,11 @@ public class ClientConnection extends Thread
         String cmd = s.nextToken();
         if(cmd.equals("INIT"))
         {
+          String top = s.nextToken();
+          List<String> hand = new ArrayList<String>();
+          while(s.nextToken() != null)
+            hand.add(s.nextToken());
+          gui.initialize(top, hand);
         }
       }
       catch (Exception e)

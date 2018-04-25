@@ -4,7 +4,7 @@ public class Game
 {
   private LinkedList<Card> deck;
   private LinkedList<Card> discard;
-  private List<List<Card>> hands;
+  public List<List<Card>> hands;
   
   public Game(int numPlayers)
   {
