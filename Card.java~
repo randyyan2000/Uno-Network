@@ -41,36 +41,4 @@ public class Card
            top.getRank() == bottom.getRank();
   }
   
-  public String toString()
-  {
-    String s = "";
-    if(color == Card.BLUE)
-      s+=("blue");
-    else if(color==Card.GREEN)
-      s+=("green");
-    else if(color==Card.YELLOW)
-      s+=("yellow");
-    else if(color==Card.RED)
-      s+=("red");
-    else
-      s+=("wild");
-    s+=("_");
-    int r = rank;
-    if(r == Card.SKIP_RANK)
-      s+="skip";
-    else if(r == Card.REVERSE_RANK)
-      s+="reverse";
-    else if(r==Card.DRAWFOUR_RANK)
-      s+="pickfour";
-    else if(r==Card.DRAWTWO_RANK)
-      s+="picker";
-    else if(r==Card.WILD_RANK)
-      s+="wild";
-    else
-      s += r;
-    s+="_large.png";
-      
-    return s;
-  }
-  
 }

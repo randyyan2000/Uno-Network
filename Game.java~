@@ -68,12 +68,9 @@ public class Game
     hands.get(playerNum).add(deck.pop());
   }
   
-  public void playCard(Card card, int playerNum)
+  public void playCard(int playerNum, Card card)
   {
     hands.get(playerNum).remove(card);
     discard.push(card);
   }
-  
-  
-  
 }

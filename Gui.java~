@@ -53,7 +53,7 @@ public class Gui
   
   public void update(Card c)
   {
-    display.setImage(discard, c.toString());
+    display.setImage(discard, toString(c));
   }
 
   //called when the user clicks on a location.
@@ -79,7 +79,38 @@ public class Gui
 
   }
   
-  
+  public String toString(Card c)
+  {
+    String s = "";
+    int color = c.getColor();
+    if(color == Card.BLUE)
+      s+=("blue");
+    else if(color==Card.GREEN)
+      s+=("green");
+    else if(color==Card.YELLOW)
+      s+=("yellow");
+    else if(color==Card.RED)
+      s+=("red");
+    else
+      s+=("wild");
+    s+=("_");
+    int r = c.getRank();
+    if(r == Card.SKIP_RANK)
+      s+="skip";
+    else if(r == Card.REVERSE_RANK)
+      s+="reverse";
+    else if(r==Card.DRAWFOUR_RANK)
+      s+="pickfour";
+    else if(r==Card.DRAWTWO_RANK)
+      s+="picker";
+    else if(r==Card.WILD_RANK)
+      s+="wild";
+    else
+      s += r;
+    s+="_large.png";
+      
+    return s;
+  }
   
   //example:  blue_0_large.png
   public Card toCard(String s)
