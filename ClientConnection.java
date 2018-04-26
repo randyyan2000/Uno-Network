@@ -1,50 +1,58 @@
 import java.io.*;  //for BufferedReader, InputStreamReader, PrintWriter
 import java.net.*;  //for ServerSocket, Socket
 import java.util.*;
-
 public class ClientConnection extends Thread
 {
+  private ClientGame clientGame;
   private Socket socket;
-  private int playerNum;
   private BufferedReader in;
   private PrintWriter out;
+  private Piece pieceFromNetwork;
   
-  
-  public Gui gui;
-  
-  
-  
-  public ClientConnection(int playerNum)
+  public ClientConnection(String serverAddress, ClientGame clientGame)
   {
-    this.playerNum = playerNum;
-    gui = new Gui();
+    this.clientGame = clientGame;
+    socket = new Socket(serverAddress, 8000);
+    in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+    out = new PrintWriter(socket.getOutputStream(), true);
+    start();
   }
   
   public void run()
   {
-    while(true)
+    while (true)
     {
-      try
+      String line = in.readLine();  //blocks until something received
+      String[] tokens = line.split(" ");
+      if (tokens[0].equals("GETMOVE"))
+        clientGame.processGetMove();
+      else if (tokens[0].equals("RETPIECE"))
       {
-        StringTokenizer s = new StringTokenizer(in.readLine());
-        String cmd = s.nextToken();
-        if(cmd.equals("INIT"))
-        {
-          String top = s.nextToken();
-          List<String> hand = new ArrayList<String>();
-          while(s.nextToken() != null)
-            hand.add(s.nextToken());
-          gui.initialize(top, hand);
-        }
-      }
-      catch (Exception e)
-      {
-        
+        int rank = Integer.parseInt(tokens[1]);
+        pieceFromNetwork = new Piece(rank);
       }
     }
   }
-    
-    
-    
-    
+  
+  //clientGame wants to return a move to the server
+  public void returnMove(Move move)
+  {
+    out.println("RETMOVE " + move.getFrom().getRow() + " " +
+                move.getFrom().getCol() + " " +
+                move.getTo().getRow() + " " +
+                move.getTo().getCol());
+  }
+  
+  //clientGame wants to get the piece at given location.
+  //blocks until has answer.
+  public Piece getPiece(Location loc)
+  {
+    pieceFromNetwork = null;
+    out.println("GETPIECE " + loc.getRow() + " " + loc.getCol());
+    while (pieceFromNetwork == null)
+    {
+      try{Thread.sleep(100);}catch(Exception e){}
+    }
+    return pieceFromNetwork;
+  }
 }

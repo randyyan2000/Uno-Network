@@ -3,7 +3,7 @@ import java.util.*;
 public class Game
 {
   private LinkedList<Card> deck;
-  private LinkedList<Card> discard;
+  public LinkedList<Card> discard;
   public List<List<Card>> hands;
   
   public Game(int numPlayers)

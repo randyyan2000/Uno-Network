@@ -16,7 +16,7 @@ public class Server
       ServerSocket server = new ServerSocket(9000);  
       for(int i = 0; i < 4; i++)
       {
-        connections.add(new ServerConnection(server.accept(), this, i));
+//        connections.add(new ServerConnection(server.accept(), this, i));
       }
     } //start server on port 9000
     
