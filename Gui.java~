@@ -1,5 +1,4 @@
 import java.util.*;
-import java.awt.Graphics;
 
 public class Gui
 {
@@ -14,11 +13,11 @@ public class Gui
     
     display = new GridDisplay(9,9);
     display.setTitle("UNO!");
-//    display.setImage(new Location(8,4) , "blue_0_large.png");
-//    display.setImage(new Location(8,2) , "blue_0_large.png");
-//    display.setImage(new Location(8,3) , "blue_0_large.png");
-//    display.setImage(new Location(8,5) , "blue_0_large.png");
-//    display.setImage(new Location(8,6) , "blue_0_large.png");
+    display.setImage(new Location(8,4) , "blue_0_large.png");
+    display.setImage(new Location(8,2) , "blue_0_large.png");
+    display.setImage(new Location(8,3) , "blue_0_large.png");
+    display.setImage(new Location(8,5) , "blue_0_large.png");
+    display.setImage(new Location(8,6) , "blue_0_large.png");
     image="";
   }
   
@@ -90,8 +89,6 @@ public class Gui
     {
       display.setImage(new Location(8, i+1), hand.get(i)); 
     }
-    Graphics g = display.getGraphics();
-    g.drawString(7+"", 0, 200);
   }
   
   
@@ -145,14 +142,13 @@ public class Gui
   //this code starts a game when you click the run button
   public static void main(String[] args)
   {
-    Gui gui = new Gui();
-    Game g = new Game(4);
-    gui.initialize(g.discard.peek().toString(), convert(g.hands.get(0)));
+    Gui g = new Gui();
+    g.play();
   }
   
   
   //test method
-  public static List<String> convert(List<Card> l)
+  public List<String> convert(List<Card> l)
   {
     List<String> ret = new ArrayList<String>();
     for(int i = 0; i< l.size(); i++)
