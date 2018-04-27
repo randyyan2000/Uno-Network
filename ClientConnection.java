@@ -9,10 +9,7 @@ public class ClientConnection extends Thread
   private BufferedReader in;
   private PrintWriter out;
   
-  
   public Gui gui;
-  
-  
   
   public ClientConnection(int playerNum)
   {
