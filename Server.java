@@ -2,10 +2,15 @@ import java.util.*;
 import java.io.*;
 import java.net.*;
 
+
+
 public class Server
 {
+  public static final int NPLAYERS = 1; 
+  
   private Game game;
   private List<ServerConnection> connections;
+  private int Color;
   
   public Server()
   {
@@ -14,15 +19,15 @@ public class Server
     try 
     { 
       ServerSocket server = new ServerSocket(9000);  
-      for(int i = 0; i < 4; i++)
+      for(int i = 0; i < NPLAYERS; i++)
       {
-//        connections.add(new ServerConnection(server.accept(), this, i));
+        connections.add(new ServerConnection(server.accept(), this, i));
       }
     } //start server on port 9000
     
     catch (Exception e) { e.printStackTrace(); }
     
-    game = new Game(4);
+    game = new Game(NPLAYERS);
   }
   
   public void drawCard(int playerNum)
@@ -45,9 +50,10 @@ public class Server
   
   public void initialize()
   {
-    for( ServerConnection connection : connections)
+    for(int i = 0; i < NPLAYERS; i++)
     {
-//      connection.initialize();
+      ServerConnection connection = connections.get(i);
+      connection.initialize(game.discard.peek(), game.hands.get(i));
     }
   }
   
@@ -57,6 +63,8 @@ public class Server
     {
       for( ServerConnection connection : connections)
       {
+        System.out.println(game.hands.get(0));
+        System.out.println(game.discard.peek());
         connection.askForMove();
 //        connection.update(Card c, int playerNum);
       }

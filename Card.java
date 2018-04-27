@@ -64,7 +64,7 @@ public class Card
       s+="pickfour";
     else if(r==Card.DRAWTWO_RANK)
       s+="picker";
-    else if(r==Card.WILD_RANK && color == Card.WILD_COLOR)
+    else if(r==Card.WILD_RANK)
       s+="wild";
     else
       s += r;

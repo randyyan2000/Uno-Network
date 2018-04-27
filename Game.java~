@@ -4,7 +4,7 @@ public class Game
 {
   private LinkedList<Card> deck;
   private LinkedList<Card> discard;
-  private List<List<Card>> hands;
+  public List<List<Card>> hands;
   
   public Game(int numPlayers)
   {
@@ -68,9 +68,12 @@ public class Game
     hands.get(playerNum).add(deck.pop());
   }
   
-  public void playCard(int playerNum, Card card)
+  public void playCard(Card card, int playerNum)
   {
     hands.get(playerNum).remove(card);
     discard.push(card);
   }
+  
+  
+  
 }

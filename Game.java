@@ -70,7 +70,9 @@ public class Game
   
   public void playCard(Card card, int playerNum)
   {
+    System.out.println(hands.get(playerNum));
     hands.get(playerNum).remove(card);
+    System.out.println(hands.get(playerNum));
     discard.push(card);
   }
   

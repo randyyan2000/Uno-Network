@@ -1,58 +1,59 @@
 import java.io.*;  //for BufferedReader, InputStreamReader, PrintWriter
 import java.net.*;  //for ServerSocket, Socket
 import java.util.*;
+
 public class ClientConnection extends Thread
 {
-  private ClientGame clientGame;
   private Socket socket;
+  private int playerNum;
   private BufferedReader in;
   private PrintWriter out;
-  private Piece pieceFromNetwork;
   
-  public ClientConnection(String serverAddress, ClientGame clientGame)
+  
+  public Gui gui;
+  
+  
+  
+  public ClientConnection(int playerNum)
   {
-    this.clientGame = clientGame;
-    socket = new Socket(serverAddress, 8000);
-    in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-    out = new PrintWriter(socket.getOutputStream(), true);
-    start();
+    this.playerNum = playerNum;
+//    gui = new Gui(playerNum);
   }
   
   public void run()
   {
-    while (true)
+    while(true)
     {
-      String line = in.readLine();  //blocks until something received
-      String[] tokens = line.split(" ");
-      if (tokens[0].equals("GETMOVE"))
-        clientGame.processGetMove();
-      else if (tokens[0].equals("RETPIECE"))
+      try
       {
-        int rank = Integer.parseInt(tokens[1]);
-        pieceFromNetwork = new Piece(rank);
+        StringTokenizer s = new StringTokenizer(in.readLine());
+        String cmd = s.nextToken();
+        if(cmd.equals("INIT"))
+        {
+          initialize(s);
+        }
+        else if(cmd.equals("GETMOVE"))
+        {
+          //ask gui for move
+        }
+      }
+      catch (Exception e)
+      {
+        
       }
     }
   }
   
-  //clientGame wants to return a move to the server
-  public void returnMove(Move move)
+  public void initialize(StringTokenizer s)
   {
-    out.println("RETMOVE " + move.getFrom().getRow() + " " +
-                move.getFrom().getCol() + " " +
-                move.getTo().getRow() + " " +
-                move.getTo().getCol());
+    String top = s.nextToken();
+    List<String> hand = new ArrayList<String>();
+    while(s.nextToken() != null)
+      hand.add(s.nextToken());
+    gui.initialize(top, hand);
   }
-  
-  //clientGame wants to get the piece at given location.
-  //blocks until has answer.
-  public Piece getPiece(Location loc)
-  {
-    pieceFromNetwork = null;
-    out.println("GETPIECE " + loc.getRow() + " " + loc.getCol());
-    while (pieceFromNetwork == null)
-    {
-      try{Thread.sleep(100);}catch(Exception e){}
-    }
-    return pieceFromNetwork;
-  }
+    
+    
+    
+    
 }

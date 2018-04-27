@@ -11,3 +11,40 @@ public class ClientConnection extends Thread
   
   
   public Gui gui;
+  
+  
+  
+  public ClientConnection(int playerNum)
+  {
+    this.playerNum = playerNum;
+    gui = new Gui();
+  }
+  
+  public void run()
+  {
+    while(true)
+    {
+      try
+      {
+        StringTokenizer s = new StringTokenizer(in.readLine());
+        String cmd = s.nextToken();
+        if(cmd.equals("INIT"))
+        {
+          String top = s.nextToken();
+          List<String> hand = new ArrayList<String>();
+          while(s.nextToken() != null)
+            hand.add(s.nextToken());
+          gui.initialize(top, hand);
+        }
+      }
+      catch (Exception e)
+      {
+        
+      }
+    }
+  }
+    
+    
+    
+    
+}
