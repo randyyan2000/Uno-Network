@@ -60,11 +60,11 @@ public class Card
       s+="skip";
     else if(r == Card.REVERSE_RANK)
       s+="reverse";
-    else if(r==Card.DRAWFOUR_RANK)
+    else if(r==Card.DRAWFOUR_RANK && color == Card.WILD_COLOR)
       s+="pickfour";
     else if(r==Card.DRAWTWO_RANK)
       s+="picker";
-    else if(r==Card.WILD_RANK)
+    else if(r==Card.WILD_RANK && color == Card.WILD_COLOR)
       s+="wild";
     else
       s += r;

@@ -150,7 +150,7 @@ public class GridDisplay extends JComponent implements KeyListener, MouseListene
     //ignore
   }
   
-  private static java.awt.Color toJavaColor(Color color)
+  public static java.awt.Color toJavaColor(Color color)
   {
     return new java.awt.Color(color.getRed(), color.getGreen(), color.getBlue());
   }
@@ -165,11 +165,12 @@ public class GridDisplay extends JComponent implements KeyListener, MouseListene
         Cell cell = cells[loc.getRow()][loc.getCol()];
         
         Color color = cell.getColor();
-        g.setColor(toJavaColor(color));
         int cellSize = getCellSize();
         int x = col * cellSize;
         int y = row * cellSize;
+        g.setColor(toJavaColor(new Color(50,200,50)));
         g.fillRect(x, y, cellSize, cellSize);
+        g.setColor(toJavaColor(color));
         
         String imageFileName = cell.getImageFileName();
         if (imageFileName != null)
