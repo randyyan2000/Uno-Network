@@ -51,12 +51,7 @@ public class ServerConnection extends Thread
       {
         String rank = s.nextToken();
         String color = s.nextToken();
-        server.playCard(toCard(rank,color), playerNum);
-      }
-      
-      else if(cmd.equals("PICKCOLOR"))
-      {
-        pickColor(Integer.parseInt(s.nextToken()));
+        server.playCard( toCard(rank,color), playerNum);
       }
     } 
     catch(Exception e){e.printStackTrace();}
@@ -71,11 +66,6 @@ public class ServerConnection extends Thread
       s += " " + c.toString();
     }
     out.println(s);
-  }
-  
-  public void pickColor(int c)
-  {
-//    server.pickColor(c);
   }
   
   public Card toCard(String rank, String color)

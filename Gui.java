@@ -56,7 +56,6 @@ public class Gui
     display.setImage(discard, c.toString());
     
   }
-  
 
   //called when the user clicks on a location.
   //that location is passed to this method.
@@ -192,6 +191,18 @@ public class Gui
   
   //test method
   public static List<String> convert(List<Card> l)
+  {
+    List<String> ret = new ArrayList<String>();
+    for(int i = 0; i< l.size(); i++)
+    {
+      ret.add(l.get(i).toString());
+    }
+    return ret;
+  }
+  
+  
+  //test method
+  public List<String> convert(List<Card> l)
   {
     List<String> ret = new ArrayList<String>();
     for(int i = 0; i< l.size(); i++)
