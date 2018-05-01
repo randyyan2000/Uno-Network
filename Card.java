@@ -34,6 +34,11 @@ public class Card
     return color;
   }
   
+  public boolean equals(Object o)
+  {
+    return (this.rank == ((Card)o).getRank()) && (this.color == ((Card)o).getColor());
+  }
+  
   public static boolean validMove(Card top, Card bottom)
   {
     return top.getColor() == WILD_COLOR ||

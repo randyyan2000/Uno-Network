@@ -71,7 +71,14 @@ public class Game
   public void playCard(Card card, int playerNum)
   {
     System.out.println(hands.get(playerNum));
-    hands.get(playerNum).remove(card);
+    for(int i = 0; i < hands.get(playerNum).size(); i++)
+    {
+      if(hands.get(playerNum).get(i).equals(card))
+      {
+        hands.get(playerNum).remove(i);
+        break;
+      }
+    }
     System.out.println(hands.get(playerNum));
     discard.push(card);
   }

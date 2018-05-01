@@ -38,8 +38,14 @@ public class Server
   public void playCard(Card c, int playerNum)
   {
     game.playCard(c, playerNum);
+    if(c.getColor() == Card.WILD_COLOR)
+      connections.get(playerNum).askForColor();
   }
   
+  public void pickColor(int c)
+  {
+    
+  }
   
   public static void main(String[] args)
   {
