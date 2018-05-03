@@ -14,7 +14,7 @@ public class ClientConnection extends Thread
   public ClientConnection(int playerNum)
   {
     this.playerNum = playerNum;
-//    gui = new Gui(playerNum);
+    //gui = new Gui(playerNum);
   }
   
   public void run()
@@ -31,7 +31,15 @@ public class ClientConnection extends Thread
         }
         else if(cmd.equals("GETMOVE"))
         {
-          //ask gui for move
+          gui.askingForMove = true;
+        }
+        if(cmd.equals("UPDATE"))
+        {
+          String r = s.nextToken();
+          String c = s.nextToken();
+          int playerNum = Integer.parseInt(s.nextToken());
+          Card card = toCard(r,c);
+          gui.cardPlayed(card, playerNum);
         }
       }
       catch (Exception e)
@@ -39,6 +47,16 @@ public class ClientConnection extends Thread
         e.printStackTrace();
       }
     }
+  }
+  
+  public void drawCard()
+  {
+    out.println("DRAWCARD");
+  }
+  
+  public void playCard(Card c)
+  {
+    out.println("PLAYCARD" + " " + c.toCode());
   }
   
   public void initialize(StringTokenizer s)
@@ -50,7 +68,24 @@ public class ClientConnection extends Thread
     gui.initialize(top, hand);
   }
     
+  public Card toCard(String rank, String color)
+  {
+    int c;
+    int r;
+    if(color.equals("W"))
+      c = Card.WILD_COLOR;
+    else if(color.equals("R"))
+      c = Card.RED;
+    else if(color. equals("B"))
+      c = Card.BLUE;
+    else if(color.equals("G"))
+      c = Card.GREEN;
+    else //(color.equals("Y"))
+      c = Card.YELLOW;
     
+    r = Integer.parseInt(rank);
+    return new Card(r,c);
+  }
     
     
 }

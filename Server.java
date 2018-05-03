@@ -32,14 +32,30 @@ public class Server
   
   public void drawCard(int playerNum)
   {
-    game.drawCard(playerNum);
+    for(int i = 0; i < NPLAYERS; i++)
+    {
+      if(i == playerNum)
+        connections.get(i).update(game.drawCard(playerNum), -1);
+      else
+        connections.get(i).update(null, playerNum);
+    }
   }
   
   public void playCard(Card c, int playerNum)
   {
     game.playCard(c, playerNum);
+    if(c.getColor() == Card.WILD_COLOR)
+      connections.get(playerNum).askForColor();
+    for(int i = 0; i < NPLAYERS; i++)
+    {
+      connections.get(i).update(c, playerNum);
+    }
   }
   
+  public void pickColor(int c)
+  {
+    game.pickColor(c);
+  }
   
   public static void main(String[] args)
   {
@@ -66,7 +82,6 @@ public class Server
         System.out.println(game.hands.get(0));
         System.out.println(game.discard.peek());
         connection.askForMove();
-//        connection.update(Card c, int playerNum);
       }
     }
   }

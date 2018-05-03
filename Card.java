@@ -34,11 +34,33 @@ public class Card
     return color;
   }
   
+  public boolean equals(Object o)
+  {
+    return (this.rank == ((Card)o).getRank()) && (this.color == ((Card)o).getColor());
+  }
+  
   public static boolean validMove(Card top, Card bottom)
   {
     return top.getColor() == WILD_COLOR ||
            top.getColor() == bottom.getColor() ||
            top.getRank() == bottom.getRank();
+  }
+  
+  public String toCode()
+  {
+    String s = ""+rank+" ";
+    
+    if(color == Card.BLUE)
+      s+=("B");
+    else if(color==Card.GREEN)
+      s+=("G");
+    else if(color==Card.YELLOW)
+      s+=("Y");
+    else if(color==Card.RED)
+      s+=("R");
+    else
+      s+=("W");
+    return s;
   }
   
   public String toString()

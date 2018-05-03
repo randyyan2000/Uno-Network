@@ -56,26 +56,39 @@ public class Game
   {
     while(discard.size()>1)
     {
-      deck.push(discard.pop());
+      if(discard.peek().getRank() != 13)
+        deck.push(discard.pop());
     }
     Collections.shuffle(deck);
   }
   
-  public void drawCard(int playerNum)
+  public Card drawCard(int playerNum)
   {
     if(deck.isEmpty())
       reshuffleDeck();
-    hands.get(playerNum).add(deck.pop());
+    Card c = deck.pop();
+    hands.get(playerNum).add(c);
+    return c;
   }
   
   public void playCard(Card card, int playerNum)
   {
     System.out.println(hands.get(playerNum));
-    hands.get(playerNum).remove(card);
+    for(int i = 0; i < hands.get(playerNum).size(); i++)
+    {
+      if(hands.get(playerNum).get(i).equals(card))
+      {
+        hands.get(playerNum).remove(i);
+        break;
+      }
+    }
     System.out.println(hands.get(playerNum));
     discard.push(card);
   }
   
-  
+  public void pickColor(int color)
+  {
+    discard.push(new Card(13, color));
+  }
   
 }

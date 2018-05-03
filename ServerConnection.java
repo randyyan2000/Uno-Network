@@ -73,10 +73,22 @@ public class ServerConnection extends Thread
     out.println(s);
   }
   
+  public void askForColor()
+  {
+    out.println("ASKCOLOR");
+  }
+  
+  public void update(Card c, int playerNum)
+  {
+    out.println("UPDATE" + " " + c.toCode() + " " + playerNum);
+  }
+  
   public void pickColor(int c)
   {
-//    server.pickColor(c);
+    server.pickColor(c);
   }
+  
+  
   
   public Card toCard(String rank, String color)
   {
