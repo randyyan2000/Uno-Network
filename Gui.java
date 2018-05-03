@@ -1,35 +1,38 @@
 import java.util.*;
 import java.awt.Graphics;
 
-public class Gui
+public class Gui extends Thread
 {
   private GridDisplay display;
   private String image;
-  private int playerNum;
+//  private int playerNum;
   private int hand1;
   private int hand2;
   private int hand3;
   public boolean askingForMove;
   private Graphics g;
+  private ClientConnection connection;
 
   
   private static Location discard = new Location(4,4);
   private static Location draw=new Location(3,4);
   public Gui()
   {
+//    this.playerNum = playerNum;
     askingForMove = false;
-    playerNum=0;
+//    playerNum=0;
     display = new GridDisplay(9,9);
     display.setTitle("UNO!");
     image="";
     hand1=7;
     hand2=7;
     hand3=7;
+    display.setImage(draw,"card.png");
     g = display.getGraphics();
     g.setColor(GridDisplay.toJavaColor(new Color(170,170,170)));
   }
   
-  public void play()
+  public void run()
   {
     while (true)
     {
@@ -48,18 +51,18 @@ public class Gui
         locationClicked(clickLoc);
       }
       
-      if(askingForMove)
-      {
-        g.setColor(GridDisplay.toJavaColor(new Color(255,255,255)));
-        g.drawString("chris is ree", 250, 100);
-        askingForMove = !askingForMove;
-      }
-      else
-      {
-        g.setColor(GridDisplay.toJavaColor(new Color(50,200,50)));
-        g.fillRect(250,75,50,50);
-        askingForMove = !askingForMove;
-      }
+//      if(askingForMove)
+//      {
+//        g.setColor(GridDisplay.toJavaColor(new Color(255,255,255)));
+//        g.drawString("chris is ree", 250, 100);
+//        askingForMove = !askingForMove;
+//      }
+//      else
+//      {
+//        g.setColor(GridDisplay.toJavaColor(new Color(50,200,50)));
+//        g.fillRect(250,75,50,50);
+//        askingForMove = !askingForMove;
+//      }
       
       if (key != -1)
       {
@@ -115,6 +118,7 @@ public class Gui
   //that location is passed to this method.
   private void locationClicked(Location loc)
   {
+    System.out.println(askingForMove);
     if(askingForMove)
     {
     if(display.getImage(loc)!=null && !loc.equals(discard)) // ree
@@ -130,19 +134,27 @@ public class Gui
         System.out.println(image);
         display.setImage(discard,image);
         display.setImage(loc,null);
+        System.out.print("supposed to play card");
+        connection.playCard(toCard(image));
       }
-      // client.playCard(toCard(image));
+      
     }
-   
+    if(loc.equals(draw))
+    {
+      connection.drawCard();
     }
     askingForMove = false;
+   
+    }
   }
   public int pickColor()
   {
+    display.pause(100);
     display.setColor(new Location(3,4),new Color(100,0,0));
     display.setColor(new Location(3,5),new Color(100,100,0));
     display.setColor(new Location(3,6),new Color(0,0,100));
     display.setColor(new Location(3,7),new Color(0,100,0));
+    display.pause(500);
     int color = 0;
     
     while(color == 0)
@@ -174,6 +186,7 @@ public class Gui
   
   public void initialize(String top, List<String> hand)
   {
+    System.out.println("init");
     display.setImage(discard, top);
     for(int i = 0; i < hand.size(); i++)
     {
@@ -241,15 +254,15 @@ public class Gui
   }
   
   //this code starts a game when you click the run button
-  public static void main(String[] args) throws InterruptedException
-  {
-    Gui gui = new Gui();
-    Game game = new Game(4);
-    gui.initialize(game.discard.peek().toString(), convert(game.hands.get(0)));
-//    Thread.sleep(100);
-//    gui.pickColor();
-    gui.play();
-  }
+//  public static void main(String[] args) throws InterruptedException
+//  {
+//    Gui gui = new Gui();
+//    Game game = new Game(4);
+//    gui.initialize(game.discard.peek().toString(), convert(game.hands.get(0)));
+////    Thread.sleep(100);
+////    gui.pickColor();
+//    gui.play();
+//  }
   
   
   //test method
