@@ -3,7 +3,7 @@ import java.util.*;
 public class Game
 {
   private LinkedList<Card> deck;
-  private LinkedList<Card> discard;
+  public LinkedList<Card> discard;
   public List<List<Card>> hands;
   
   public Game(int numPlayers)
@@ -56,7 +56,8 @@ public class Game
   {
     while(discard.size()>1)
     {
-      deck.push(discard.pop());
+      if(discard.peek().getRank() != 13)
+        deck.push(discard.pop());
     }
     Collections.shuffle(deck);
   }
@@ -70,10 +71,22 @@ public class Game
   
   public void playCard(Card card, int playerNum)
   {
-    hands.get(playerNum).remove(card);
+    System.out.println(hands.get(playerNum));
+    for(int i = 0; i < hands.get(playerNum).size(); i++)
+    {
+      if(hands.get(playerNum).get(i).equals(card))
+      {
+        hands.get(playerNum).remove(i);
+        break;
+      }
+    }
+    System.out.println(hands.get(playerNum));
     discard.push(card);
   }
   
-  
+  public void pickColor(int color)
+  {
+    discard.push(new Card(13, color));
+  }
   
 }

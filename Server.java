@@ -60,6 +60,12 @@ public class Server
   public static void main(String[] args)
   {
     Server s = new Server();
+    try
+    {
+    Thread.sleep(100);
+    }
+    catch(Exception e)
+    {e.printStackTrace();}
     s.initialize();
     s.play();
   }
@@ -70,6 +76,7 @@ public class Server
     {
       ServerConnection connection = connections.get(i);
       connection.initialize(game.discard.peek(), game.hands.get(i));
+//      System.out.println("init");
     }
   }
   
@@ -79,8 +86,8 @@ public class Server
     {
       for( ServerConnection connection : connections)
       {
-        System.out.println(game.hands.get(0));
-        System.out.println(game.discard.peek());
+//        System.out.println(game.hands.get(0));
+//        System.out.println(game.discard.peek());
         connection.askForMove();
       }
     }

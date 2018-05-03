@@ -34,11 +34,48 @@ public class Card
     return color;
   }
   
+  public boolean equals(Object o)
+  {
+    return (this.rank == ((Card)o).getRank()) && (this.color == ((Card)o).getColor());
+  }
+  
   public static boolean validMove(Card top, Card bottom)
   {
     return top.getColor() == WILD_COLOR ||
            top.getColor() == bottom.getColor() ||
            top.getRank() == bottom.getRank();
+  }
+  
+  public String toString()
+  {
+    String s = "";
+    if(color == Card.BLUE)
+      s+=("blue");
+    else if(color==Card.GREEN)
+      s+=("green");
+    else if(color==Card.YELLOW)
+      s+=("yellow");
+    else if(color==Card.RED)
+      s+=("red");
+    else
+      s+=("wild");
+    s+=("_");
+    int r = rank;
+    if(r == Card.SKIP_RANK)
+      s+="skip";
+    else if(r == Card.REVERSE_RANK)
+      s+="reverse";
+    else if(r==Card.DRAWFOUR_RANK && color == Card.WILD_COLOR)
+      s+="pickfour";
+    else if(r==Card.DRAWTWO_RANK)
+      s+="picker";
+    else if(r==Card.WILD_RANK && color == Card.WILD_COLOR)
+      s+="wild";
+    else
+      s += r;
+    s+="_large.png";
+      
+    return s;
   }
   
 }

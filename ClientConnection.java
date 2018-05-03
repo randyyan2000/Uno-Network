@@ -11,26 +11,10 @@ public class ClientConnection extends Thread
   
   public Gui gui;
   
-  public ClientConnection(int playerNum, String ip, int port)
+  public ClientConnection(int playerNum)
   {
-    try
-    {
-    socket = new Socket(ip, port);
-    in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-    out = new PrintWriter(socket.getOutputStream(), true);
-    }
-    catch(Exception e)
-    {e.printStackTrace();}
-    
     this.playerNum = playerNum;
-    gui = new Gui();
-    gui.start();
-    start();
-  }
-  
-  public static void main(String[] args)
-  {
-    ClientConnection c = new ClientConnection(0,"10.13.32.72",9000);
+    //gui = new Gui(playerNum);
   }
   
   public void run()
@@ -39,11 +23,8 @@ public class ClientConnection extends Thread
     {
       try
       {
-        String line = in.readLine();
-        System.out.println("received:  " + line);
-        StringTokenizer s = new StringTokenizer(line);
+        StringTokenizer s = new StringTokenizer(in.readLine());
         String cmd = s.nextToken();
-        System.out.println(cmd);
         if(cmd.equals("INIT"))
         {
           initialize(s);
@@ -75,25 +56,15 @@ public class ClientConnection extends Thread
   
   public void playCard(Card c)
   {
-    send("PLAYCARD" + " " + c.toCode());
-   
-  }
-  
-  public void send(String message)
-  {
-    System.out.println("sending:    " + message);
-    out.println(message);
+    out.println("PLAYCARD" + " " + c.toCode());
   }
   
   public void initialize(StringTokenizer s)
   {
     String top = s.nextToken();
-    System.out.println("top: " + top);
     List<String> hand = new ArrayList<String>();
-    for(int i = 0; i < 7; i++)
-    {
+    while(s.nextToken() != null)
       hand.add(s.nextToken());
-    }
     gui.initialize(top, hand);
   }
     

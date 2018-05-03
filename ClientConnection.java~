@@ -9,15 +9,12 @@ public class ClientConnection extends Thread
   private BufferedReader in;
   private PrintWriter out;
   
-  
   public Gui gui;
-  
-  
   
   public ClientConnection(int playerNum)
   {
     this.playerNum = playerNum;
-    gui = new Gui();
+    //gui = new Gui(playerNum);
   }
   
   public void run()
@@ -30,18 +27,27 @@ public class ClientConnection extends Thread
         String cmd = s.nextToken();
         if(cmd.equals("INIT"))
         {
-          String top = s.nextToken();
-          List<String> hand = new ArrayList<String>();
-          while(s.nextToken() != null)
-            hand.add(s.nextToken());
-          gui.initialize(top, hand);
+          initialize(s);
+        }
+        else if(cmd.equals("GETMOVE"))
+        {
+          gui.askingForMove = true;
         }
       }
       catch (Exception e)
       {
-        
+        e.printStackTrace();
       }
     }
+  }
+  
+  public void initialize(StringTokenizer s)
+  {
+    String top = s.nextToken();
+    List<String> hand = new ArrayList<String>();
+    while(s.nextToken() != null)
+      hand.add(s.nextToken());
+    gui.initialize(top, hand);
   }
     
     

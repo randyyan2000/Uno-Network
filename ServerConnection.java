@@ -14,6 +14,7 @@ public class ServerConnection extends Thread
   
   public ServerConnection(Socket socket, Server server, int pNum)
   {
+    System.out.println("accepted connection for " + pNum);
     this.server = server;
     this.playerNum = pNum;
     try
@@ -26,12 +27,21 @@ public class ServerConnection extends Thread
     {
       e.printStackTrace();
     }
+    start();
   }
   
-//  public void run()
-//  {
-//    
-//  }
+  public void run()
+  {
+    
+      
+//      else if(cmd.equals("PICKCOLOR"))
+//      {
+//        pickColor(Integer.parseInt(s.nextToken()));
+//      }
+//    } 
+    
+    
+  }
   
   
   public void askForMove()
@@ -39,7 +49,9 @@ public class ServerConnection extends Thread
     out.println("GETMOVE");
     try
     {
-      StringTokenizer s = new StringTokenizer(in.readLine());
+      String line = in.readLine();
+      System.out.println("recieving:   " + line);
+      StringTokenizer s = new StringTokenizer(line);
       String cmd = s.nextToken();
       
       if(cmd.equals("DRAWCARD"))
@@ -53,12 +65,7 @@ public class ServerConnection extends Thread
         String color = s.nextToken();
         server.playCard(toCard(rank,color), playerNum);
       }
-      
-      else if(cmd.equals("PICKCOLOR"))
-      {
-        pickColor(Integer.parseInt(s.nextToken()));
-      }
-    } 
+    }
     catch(Exception e){e.printStackTrace();}
   }
   
@@ -70,22 +77,28 @@ public class ServerConnection extends Thread
     {
       s += " " + c.toString();
     }
-    out.println(s);
+    send(s);
   }
   
   public void askForColor()
   {
-    out.println("ASKCOLOR");
+    send("ASKCOLOR");
   }
   
   public void update(Card c, int playerNum)
   {
-    out.println("UPDATE" + " " + c.toCode() + " " + playerNum);
+    send("UPDATE" + " " + c.toCode() + " " + playerNum);
   }
   
   public void pickColor(int c)
   {
     server.pickColor(c);
+  }
+  
+  public void send(String message)
+  {
+    System.out.println("sending:  " + message);
+    out.println(message);
   }
   
   
