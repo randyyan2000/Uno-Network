@@ -32,6 +32,11 @@ public class Gui extends Thread
     g.setColor(GridDisplay.toJavaColor(new Color(170,170,170)));
   }
   
+  public void setConnection(ClientConnection connection)
+  {
+    this.connection = connection;
+  }
+  
   public void run()
   {
     while (true)
@@ -77,11 +82,11 @@ public class Gui extends Thread
   }
   public Location findOpen()
   {
-    for(int y=8;y>5;y--)
+    for(int y=7;y>5;y--)
     {  
       for(int x=1;x<7;x++)
       {
-        if(display.getImage(new Location(x,y)).equals(null))
+        if(display.getImage(new Location(x,y)) == null)
           return new Location(x,y);
       }
       
@@ -121,7 +126,12 @@ public class Gui extends Thread
     System.out.println(askingForMove);
     if(askingForMove)
     {
-    if(display.getImage(loc)!=null && !loc.equals(discard)) // ree
+    if(loc.equals(draw))
+    {
+      connection.drawCard();
+    }
+    
+    else if(display.getImage(loc)!=null && !loc.equals(discard)) // ree
     {
       image=display.getImage(loc);
 //      System.out.println(image);
@@ -138,10 +148,6 @@ public class Gui extends Thread
         connection.playCard(toCard(image));
       }
       
-    }
-    if(loc.equals(draw))
-    {
-      connection.drawCard();
     }
     askingForMove = false;
    
@@ -210,6 +216,10 @@ public class Gui extends Thread
     int rank=0;
     int color=0;
     
+//    if(s.length() == 8)//card back
+//    {
+//      return null;
+//    }
     String[] tokens = s.split("_");
     String c = tokens[0];
     String r = tokens[1];

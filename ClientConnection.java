@@ -24,6 +24,7 @@ public class ClientConnection extends Thread
     
     this.playerNum = playerNum;
     gui = new Gui();
+    gui.setConnection(this);
     gui.start();
     start();
   }
