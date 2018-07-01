@@ -4,34 +4,36 @@ import java.util.*;
 
 public class ClientConnection extends Thread
 {
+  private static final String ip = "192.168.0.105"; // dell xps
+//  private static final String ip = "10.13.32.72"; // cs laptop #2
+//  private static final String ip = "10.3.177.205"; // dell inspiron
+
   private Socket socket;
   private int playerNum;
   private BufferedReader in;
   private PrintWriter out;
-  
-  public Gui gui;
+  private Gui gui;
   
   public ClientConnection(int playerNum, String ip, int port)
   {
     try
     {
-    socket = new Socket(ip, port);
-    in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-    out = new PrintWriter(socket.getOutputStream(), true);
+      socket = new Socket(ip, port);
+      in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+      out = new PrintWriter(socket.getOutputStream(), true);
     }
     catch(Exception e)
     {e.printStackTrace();}
     
     this.playerNum = playerNum;
     gui = new Gui();
-    gui.setConnection(this);
     gui.start();
     start();
   }
   
   public static void main(String[] args)
   {
-    ClientConnection c = new ClientConnection(0,"10.13.32.72",9000);
+    ClientConnection c = new ClientConnection(0, ip,9000);
   }
   
   public void run()
@@ -51,15 +53,27 @@ public class ClientConnection extends Thread
         }
         else if(cmd.equals("GETMOVE"))
         {
-          gui.askingForMove = true;
+          Card c = gui.askForMove();
+          if(c == null)
+            drawCard();
+          else
+            playCard(c);
         }
-        if(cmd.equals("UPDATE"))
+        else if(cmd.equals("UPDATE"))
         {
           String r = s.nextToken();
           String c = s.nextToken();
           int playerNum = Integer.parseInt(s.nextToken());
-          Card card = toCard(r,c);
+          Card card;
+          if(r.equals("null"))
+            card = null;
+          else
+            card = toCard(r,c);
           gui.cardPlayed(card, playerNum);
+        }
+        else if(cmd.equals("ASKCOLOR"))
+        {
+          send("PICKCOLOR " + gui.pickColor());
         }
       }
       catch (Exception e)
@@ -95,7 +109,7 @@ public class ClientConnection extends Thread
     {
       hand.add(s.nextToken());
     }
-    gui.initialize(top, hand);
+    gui.initialize(top, hand, Integer.parseInt(s.nextToken()));
   }
     
   public Card toCard(String rank, String color)

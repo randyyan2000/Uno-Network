@@ -13,12 +13,12 @@ public class GridDisplay extends JComponent implements KeyListener, MouseListene
   private int lastKeyPressed;
   private Location lastLocationClicked;
   private Color lineColor;
+  public Font font;
+  public boolean askingForMove;
+  public int[] opCardCount;
   
-  public GridDisplay(int numRows, int numCols)
-  {
-    init(numRows, numCols);
-  }
-  
+  public GridDisplay(int numRows, int numCols) { init(numRows, numCols); }
+
   public GridDisplay(String imageFileName)
   {
     BufferedImage image = loadImage(imageFileName);
@@ -51,31 +51,46 @@ public class GridDisplay extends JComponent implements KeyListener, MouseListene
   {
     return cells[0].length;
   }
-  
+
   private void init(int numRows, int numCols)
   {
     lastKeyPressed = -1;
     lastLocationClicked = null;
     lineColor = null;
-    
+
     cells = new Cell[numRows][numCols];
     for (int row = 0; row < numRows; row++)
     {
       for (int col = 0; col < numCols; col++)
         cells[row][col] = new Cell();
     }
-    
+
     frame = new JFrame("Grid");
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.addKeyListener(this);
-    
-    int cellSize = Math.max(Math.min(500 / getNumRows(), 500 / getNumCols()), 1);    
+
+    int cellSize = Math.max(Math.min(500 / getNumRows(), 500 / getNumCols()), 1);
     setPreferredSize(new Dimension(cellSize * numCols, cellSize * numRows));
     addMouseListener(this);
     frame.getContentPane().add(this);
-    
+
     frame.pack();
     frame.setVisible(true);
+
+    try
+    {
+      GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+      font = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("ekmukta-semibold.ttf"));
+      ge.registerFont(font);
+      font = font.deriveFont(Font.PLAIN, 20);
+      setFont(font);
+    }
+    catch (FontFormatException | IOException e)
+    {
+      e.printStackTrace();
+    }
+
+    askingForMove = false;
   }
   
   private void showImage(BufferedImage image)
@@ -168,9 +183,8 @@ public class GridDisplay extends JComponent implements KeyListener, MouseListene
         int cellSize = getCellSize();
         int x = col * cellSize;
         int y = row * cellSize;
-        g.setColor(toJavaColor(new Color(50,200,50)));
-        g.fillRect(x, y, cellSize, cellSize);
         g.setColor(toJavaColor(color));
+        g.fillRect(x, y, cellSize, cellSize);
         
         String imageFileName = cell.getImageFileName();
         if (imageFileName != null)
@@ -203,7 +217,28 @@ public class GridDisplay extends JComponent implements KeyListener, MouseListene
           g.setColor(toJavaColor(lineColor));
           g.drawRect(x, y, cellSize, cellSize);
         }
-      }    
+      }
+    }
+
+    if(askingForMove)
+    {
+      g.setColor(toJavaColor(new Color( 255, 255, 255 )));
+      ((Graphics2D)g).setStroke(new BasicStroke(5));
+      g.drawRect(0, 0, getWidth(), getHeight());
+      g.setColor(toJavaColor( Gui.TABLE_COLOR ));
+    }
+
+    //draw hand counts
+    if( opCardCount != null )
+    {
+      g.setColor(toJavaColor(new Color(255,255,255)));
+      if (opCardCount.length > 0)
+        g.drawString(opCardCount[0] + "", 23, 265);
+      if (opCardCount.length > 1)
+        g.drawString(opCardCount[2] + "", 245, 45);
+      if (opCardCount.length > 2)
+        g.drawString(opCardCount[1] + "", 465, 265);
+      g.setColor(toJavaColor(Gui.TABLE_COLOR));
     }
   }
   

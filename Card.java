@@ -78,6 +78,7 @@ public class Card
       s+=("wild");
     s+=("_");
     int r = rank;
+
     if(r == Card.SKIP_RANK)
       s+="skip";
     else if(r == Card.REVERSE_RANK)
@@ -87,6 +88,8 @@ public class Card
     else if(r==Card.DRAWTWO_RANK)
       s+="picker";
     else if(r==Card.WILD_RANK && color == Card.WILD_COLOR)
+      s+="wild";
+    else if(r == 13)
       s+="wild";
     else
       s += r;

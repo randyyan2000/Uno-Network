@@ -1,73 +1,53 @@
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
-import java.awt.Graphics;
+import java.util.List;
 
 public class Gui extends Thread
 {
   private GridDisplay display;
   private String image;
-//  private int playerNum;
-  private int hand1;
-  private int hand2;
-  private int hand3;
   public boolean askingForMove;
   private Graphics g;
-  private ClientConnection connection;
+  private List<String> hand;
 
-  
-  private static Location discard = new Location(4,4);
-  private static Location draw=new Location(3,4);
+  public static final Color TABLE_COLOR = new Color(50,150,50);
+  private static Location DISCARD_LOC = new Location(4,4);
+  private static Location DRAWPILE_LOC = new Location(3,4);
+
   public Gui()
   {
-//    this.playerNum = playerNum;
+
     askingForMove = false;
-//    playerNum=0;
     display = new GridDisplay(9,9);
     display.setTitle("UNO!");
+
     image="";
-    hand1=7;
-    hand2=7;
-    hand3=7;
-    display.setImage(draw,"card.png");
+    display.setImage(DRAWPILE_LOC,"card.png");
+    for(int r = 0; r < 9; r++)
+    {
+      for(int c = 0; c < 9; c++)
+      {
+        display.setColor(new Location(r,c), TABLE_COLOR);
+      }
+    }
     g = display.getGraphics();
     g.setColor(GridDisplay.toJavaColor(new Color(170,170,170)));
   }
-  
-  public void setConnection(ClientConnection connection)
-  {
-    this.connection = connection;
-  }
+
   
   public void run()
   {
     while (true)
     {
       //wait 100 milliseconds for mouse or keyboard
-      display.pause(500);
-      
-      //pickColor();
+      GridDisplay.pause(500);
+
       
       //check if any locations clicked or keys pressed
       Location clickLoc = display.checkLastLocationClicked();
       int key = display.checkLastKeyPressed();
-      
-      if (clickLoc != null)
-      {
-        //a location was clicked
-        locationClicked(clickLoc);
-      }
-      
-//      if(askingForMove)
-//      {
-//        g.setColor(GridDisplay.toJavaColor(new Color(255,255,255)));
-//        g.drawString("chris is ree", 250, 100);
-//        askingForMove = !askingForMove;
-//      }
-//      else
-//      {
-//        g.setColor(GridDisplay.toJavaColor(new Color(50,200,50)));
-//        g.fillRect(250,75,50,50);
-//        askingForMove = !askingForMove;
-//      }
       
       if (key != -1)
       {
@@ -76,11 +56,11 @@ public class Gui extends Thread
       }
       
       step();
-      
-//      this.pickColor();
+
     }
   }
-  public Location findOpen()
+
+  private Location findOpen()
   {
     for(int y=7;y>5;y--)
     {  
@@ -95,90 +75,100 @@ public class Gui extends Thread
     return new Location(5,0);
   }
   
-  //if playernum == -1 , then we draw a card so put card c in hand
+  //if playernum == -2 , then we draw a card so put card c in hand
   //if card c == null, then someone else drew a card increase their card count
-  //every other case is playerNum plays card c => card c on discard pile, remove if its yours or decrement opponent card count
+  //every other case is playerNum plays card c => card c on DISCARD_LOC pile, remove if its yours or decrement opponent card count
   public void cardPlayed( Card c, int playerNum )
   {
-    if(playerNum==-1)
-      display.setImage(findOpen(),c.toString());
-    else if(c!=null)
-      display.setImage(discard, c.toString());
-    else
+    if (playerNum == -1) // special cases
     {
-      if(playerNum==1)
-        hand1++;
-      else if(playerNum==2)
-        hand2++;
-      else
-        hand3++;
-    }
-    g.drawString(hand1+"", 25, 265);
-    g.drawString(hand2+"", 465, 265);
-    g.drawString(hand3+"", 245, 45);
-  }
-  
-
-  //called when the user clicks on a location.
-  //that location is passed to this method.
-  private void locationClicked(Location loc)
-  {
-    System.out.println(askingForMove);
-    if(askingForMove)
-    {
-    if(loc.equals(draw))
-    {
-      connection.drawCard();
-    }
-    
-    else if(display.getImage(loc)!=null && !loc.equals(discard)) // ree
-    {
-      image=display.getImage(loc);
-//      System.out.println(image);
-//      Card card1 = toCard(image);
-//      System.out.println(card1);
-//      Card card2 = toCard(display.getImage(discard));
-//      System.out.println(card2);
-      if(Card.validMove(toCard(image), toCard(display.getImage(discard))))  // u big ol ree
+      if (c.getRank() == 13) // special wild placeholder
+        display.setImage(DISCARD_LOC, c.toString());
+      else // playing a card yourself
       {
-        System.out.println(image);
-        display.setImage(discard,image);
-        display.setImage(loc,null);
-        System.out.print("supposed to play card");
-        connection.playCard(toCard(image));
+        display.setImage(DISCARD_LOC, c.toString());
+        //FIGURE OUT HOW TO REMOVE CARD FROM DISPLAY done
       }
-      
     }
-    askingForMove = false;
-   
+    else if(playerNum == -2)
+    {
+      display.setImage(findOpen(), c.toString());
+    }
+    else if (c != null) // someone playing a card
+    {
+      display.setImage(DISCARD_LOC, c.toString());
+      display.opCardCount[playerNum]--;
+    }
+    else // opponent drawing a card
+    {
+      System.out.println("opponent drew card");
+      display.opCardCount[playerNum]++;
+      display.repaint();
     }
   }
+
+  public Card askForMove()
+  {
+    display.askingForMove = true;
+    while(true)
+    {
+      display.pause(100);
+      Location clickLoc = display.checkLastLocationClicked();
+      if(clickLoc != null)
+      {
+        if (clickLoc.equals(DRAWPILE_LOC))
+        {
+          System.out.println("drawcard");
+          display.askingForMove = false;
+          return null;
+        }
+        else if (display.getImage(clickLoc) != null && !clickLoc.equals(DISCARD_LOC)) // ree
+        {
+          image = display.getImage(clickLoc);
+          if (Card.validMove(toCard(image), toCard(display.getImage(DISCARD_LOC))))  // u big ol ree
+          {
+            System.out.print("supposed to play card" + image);
+            display.askingForMove = false;
+            display.setImage(clickLoc, null);
+            hand.remove(image);
+            return toCard(image);
+          }
+        }
+      }
+    }
+  }
+
   public int pickColor()
   {
-    display.pause(100);
-    display.setColor(new Location(3,4),new Color(100,0,0));
-    display.setColor(new Location(3,5),new Color(100,100,0));
-    display.setColor(new Location(3,6),new Color(0,0,100));
-    display.setColor(new Location(3,7),new Color(0,100,0));
-    display.pause(500);
+    System.out.println("pickingColor");
+
+    display.setColor(new Location(3,3),new Color(245,100,98)); // red
+    display.setColor(new Location(3,5),new Color(247,227,89)); // yellow
+    display.setColor(new Location(5,3),new Color(47,226,155)); // green
+    display.setColor(new Location(5,5),new Color(0,195,229)); // blue
     int color = 0;
     
     while(color == 0)
     {
-      display.pause(100);
+      GridDisplay.pause(100);
       Location clickLoc = display.checkLastLocationClicked();
       if (clickLoc != null)
       {
-        if(clickLoc.equals(new Location(3,4)))
+        if(clickLoc.equals(new Location(3,3)))
           color = 1;
         else if(clickLoc.equals(new Location(3,5)))
           color=2;
-        else if(clickLoc.equals(new Location(3,7)))
+        else if(clickLoc.equals(new Location(5,3)))
           color=3;
-        else if(clickLoc.equals(new Location(3,6)))
+        else if(clickLoc.equals(new Location(5,5)))
           color=4;
       }
     }
+    display.setColor(new Location(3,3), TABLE_COLOR);
+    display.setColor(new Location(3,5), TABLE_COLOR);
+    display.setColor(new Location(5,5), TABLE_COLOR);
+    display.setColor(new Location(5,3), TABLE_COLOR);
+    System.out.println("gui picked color:" + color);
     return color;
   }
   
@@ -190,23 +180,27 @@ public class Gui extends Thread
   }
   
   
-  public void initialize(String top, List<String> hand)
+  public void initialize(String top, List<String> hand, int numPlayers)
   {
     System.out.println("init");
-    display.setImage(discard, top);
+    this.hand = hand;
+    display.setImage(DISCARD_LOC, top);
     for(int i = 0; i < hand.size(); i++)
     {
       display.setImage(new Location(8, i+1), hand.get(i)); 
     }
-    //display.setImage
-    display.setImage(new Location(0,4),"card.png");
-    display.setImage(new Location(4,8),"card.png");
-    display.setImage(new Location(4,0),"card.png");
-   Graphics g = display.getGraphics();
-    g.setColor(GridDisplay.toJavaColor(new Color(170,170,170)));
-    g.drawString(hand1+"", 25, 265);
-    g.drawString(hand2+"", 465, 265);
-    g.drawString(hand3+"", 245, 45);
+
+    // drawing card backs for opponents
+    if(numPlayers > 1)
+      display.setImage(new Location(4, 0), "card.png");
+    if(numPlayers > 2)
+      display.setImage(new Location(0, 4), "card.png");
+    if(numPlayers > 3)
+      display.setImage(new Location(4, 8), "card.png");
+
+    display.opCardCount = new int[numPlayers-1];
+    for( int i  = 0; i < display.opCardCount.length; i++)
+      display.opCardCount[i] = 7;
   }
   
   
@@ -264,15 +258,17 @@ public class Gui extends Thread
   }
   
   //this code starts a game when you click the run button
-//  public static void main(String[] args) throws InterruptedException
-//  {
-//    Gui gui = new Gui();
-//    Game game = new Game(4);
-//    gui.initialize(game.discard.peek().toString(), convert(game.hands.get(0)));
-////    Thread.sleep(100);
-////    gui.pickColor();
-//    gui.play();
-//  }
+  public static void main(String[] args)
+  {
+    Gui gui = new Gui();
+    Game game = new Game(4);
+    gui.initialize(game.discard.peek().toString(), convert(game.hands.get(0)), 4);
+
+    while(true)
+    {
+      gui.cardPlayed(new Card(13,gui.pickColor()),-1);
+    }
+  }
   
   
   //test method
