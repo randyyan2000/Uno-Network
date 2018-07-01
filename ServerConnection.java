@@ -27,21 +27,21 @@ public class ServerConnection extends Thread
     {
       e.printStackTrace();
     }
-    start();
+//    start();
   }
   
-  public void run()
-  {
-    
-      
-//      else if(cmd.equals("PICKCOLOR"))
-//      {
-//        pickColor(Integer.parseInt(s.nextToken()));
-//      }
-//    } 
-    
-    
-  }
+//  public void run()
+//  {
+//
+//
+////      else if(cmd.equals("PICKCOLOR"))
+////      {
+////        pickColor(Integer.parseInt(s.nextToken()));
+////      }
+////    }
+//
+//
+//  }
   
   
   public void askForMove()
@@ -69,7 +69,7 @@ public class ServerConnection extends Thread
     catch(Exception e){e.printStackTrace();}
   }
   
-  public void initialize(Card top, List<Card> hand)
+  public void initialize(Card top, List<Card> hand, int numPlayers)
   {
     String s = "INIT ";
     s += (top.toString());
@@ -77,17 +77,42 @@ public class ServerConnection extends Thread
     {
       s += " " + c.toString();
     }
+    s+= " " + numPlayers;
     send(s);
   }
   
   public void askForColor()
   {
     send("ASKCOLOR");
+    try
+    {
+      String line = in.readLine();
+      System.out.println("receiving:   " + line);
+      StringTokenizer s = new StringTokenizer(line);
+      String cmd = s.nextToken();
+      if(cmd.equals("PICKCOLOR"))
+      {
+        int color = Integer.parseInt(s.nextToken());
+        pickColor(color);
+      }
+      else
+      {
+        System.out.println("received bad command: " + line);
+        askForColor();
+      }
+    }
+    catch(Exception e)
+    {
+      e.printStackTrace();
+    }
   }
   
   public void update(Card c, int playerNum)
   {
-    send("UPDATE" + " " + c.toCode() + " " + playerNum);
+    String card = "null null";
+    if(c != null)
+      card = c.toCode();
+    send("UPDATE" + " " + card + " " + playerNum);
   }
   
   public void pickColor(int c)
