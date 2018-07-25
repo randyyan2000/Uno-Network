@@ -4,9 +4,10 @@ import java.util.*;
 
 public class ClientConnection extends Thread
 {
-  private static final String ip = "192.168.0.105"; // dell xps
+//  private static final String ip = "192.168.0.105"; // dell xps
 //  private static final String ip = "10.13.32.72"; // cs laptop #2
 //  private static final String ip = "10.3.177.205"; // dell inspiron
+    private static final String ip = "192.168.1.112"; // HU PC
 
   private Socket socket;
   private int playerNum;

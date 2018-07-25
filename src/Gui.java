@@ -1,6 +1,4 @@
 import java.awt.*;
-import java.io.File;
-import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
@@ -24,7 +22,7 @@ public class Gui extends Thread
     display.setTitle("UNO!");
 
     image="";
-    display.setImage(DRAWPILE_LOC,"card.png");
+    display.setImage(DRAWPILE_LOC, "card.png");
     for(int r = 0; r < 9; r++)
     {
       for(int c = 0; c < 9; c++)

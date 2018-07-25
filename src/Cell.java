@@ -1,5 +1,3 @@
-import java.awt.*;
-
 public class Cell
 {
   private Color color;
